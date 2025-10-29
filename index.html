@@ -1,55 +1,76 @@
-<!DOCTYPE html>
+<!doctype html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport"content"width=device-width,initial-scale=1.0"/>
-<title>My webpage</title>
-<style>
-body {
-font-family: Arial, sans-serif;
-margin: 0;
-padding: 0;
-background: linear-gradient(to right, #6dd5fa, #2980b9);
-color: white;
-text-align: center;
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-justify-content: center;
-}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Welcome to the World</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#7c3aed;--glow:rgba(124,58,237,0.25);} 
+    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;color:#e6eef8;background:linear-gradient(135deg,#071027 0%, #09203f 100%);}
+    .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:2rem}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);box-shadow:0 8px 30px rgba(2,6,23,0.6);border-radius:16px;padding:36px;max-width:760px;width:100%;text-align:center}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,4vw,3rem);letter-spacing:-0.02em}
+    p.lead{margin:0 0 1.2rem;color:#c9d7ee;opacity:.9}
+    .hero{display:flex;gap:18px;align-items:center;justify-content:center;flex-wrap:wrap}
+    .globe{width:120px;height:120px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 30% 20%, rgba(255,255,255,0.04), transparent 20%), linear-gradient(135deg,#123 0%, #234 100%);box-shadow:0 6px 24px var(--glow);border:2px solid rgba(255,255,255,0.03)}
+    .btn{background:linear-gradient(90deg,var(--accent),#4c1d95);border:none;color:white;padding:.65rem 1.1rem;border-radius:10px;font-weight:600;cursor:pointer;box-shadow:0 8px 20px rgba(12,8,30,0.5)}
+    .small{font-size:.9rem;color:#b9cbe8}
+    footer{margin-top:1rem;color:#9fb0da;font-size:.85rem}
+    @media (max-width:520px){.card{padding:20px}.globe{width:96px;height:96px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <main class="card" role="main" aria-labelledby="welcome-title">
+      <div class="hero">
+        <div class="globe" aria-hidden="true">🌍</div>
+        <div>
+          <h1 id="welcome-title">Welcome to the World</h1>
+          <p class="lead">A tiny page to greet you. Click the button to celebrate!</p>
+          <div style="display:flex;gap:.6rem;justify-content:center;align-items:center">
+            <button class="btn" id="celebrate">Celebrate</button>
+            <button class="btn" id="surprise" style="background:transparent;border:1px solid rgba(255,255,255,0.06);box-shadow:none;color:#dbe9ff;padding:.5rem .9rem">Surprise me</button>
+          </div>
+          <p class="small" id="message" style="margin-top:1rem">Made with a little HTML + joy.</p>
+        </div>
+      </div>
+      <footer>Tip: open this file in any browser. Press "Celebrate" for a quick confetti effect.</footer>
+    </main>
+  </div>  <script>
+    // small confetti using canvas
+    function confetti() {
+      const count = 80;
+      const c = document.createElement('canvas');
+      c.style.position = 'fixed'; c.style.left=0; c.style.top=0; c.style.pointerEvents='none';
+      c.width = innerWidth; c.height = innerHeight; document.body.appendChild(c);
+      const ctx = c.getContext('2d');
+      const pieces = Array.from({length:count}, () => ({x:Math.random()*c.width,y:-20,w:6+Math.random()*10,h:8+Math.random()*12,vy:2+Math.random()*6,rot:Math.random()*6,vr:0.05+Math.random()*0.2,color:'hsl('+Math.floor(Math.random()*360)+',70%,60%)'}));
+      let raf;
+      function draw(){
+        ctx.clearRect(0,0,c.width,c.height);
+        for(const p of pieces){
+          p.x += Math.sin(p.rot)*2; p.y += p.vy; p.rot += p.vr; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+          ctx.fillStyle = p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+          if(p.y>c.height+40){p.y=-40; p.x=Math.random()*c.width}
+        }
+        raf = requestAnimationFrame(draw);
+      }
+      draw();
+      setTimeout(()=>{cancelAnimationFrame(raf); c.remove();},2200);
+    }
 
-h1 {
-font-size: 3rem;
-margin-bottom: 10px;
-}
+    document.getElementById('celebrate').addEventListener('click', () => {
+      confetti();
+      const msg = document.getElementById('message');
+      msg.textContent = 'Hooray! Welcome to the world — enjoy the journey.';
+    });
 
-p {
-font-size: 1.2rem;
-margin-bottom: 30px;
-}
-
-a {
-background-color: white;
-
-color: #2980b9;
-padding: 10px 20px;
-border-radius: 8px;
-text-decoration: none;
-font-weight: bold;
-transition: background 0.3s, color 0.3s;
-}
-
-a:hover {
-background-color: #2980b9;
-color: white;
-}
-&lt;/style&gt;
-&lt;/head&gt;
-
-&lt;body&gt;
-&lt;h1&gt;Welcome to My Webpage   &lt;/h1&gt;
-&lt;p&gt;This page is hosted on &lt;b&gt;GitHub Pages&lt;/b&gt;!&lt;/p&gt;
-&lt;a href=&quot;https://github.com/naveenakec/mywebpage&quot; target=&quot;_blank&quot;&gt;View
-Repository&lt;/a&gt;
-&lt;/body&gt;
-&lt;/html&gt;
+    document.getElementById('surprise').addEventListener('click', () => {
+      const greetings = ['Bonjour, Monde!','¡Bienvenido al mundo!','Olá, Mundo!','नमस्ते दुनिया!','欢迎来到世界！','Willkommen in der Welt!'];
+      const pick = greetings[Math.floor(Math.random()*greetings.length)];
+      document.getElementById('welcome-title').textContent = pick;
+      document.getElementById('message').textContent = 'Try the Celebrate button for confetti.';
+    });
+  </script></body>
+</html>
